@@ -106,6 +106,11 @@ pipeline {
             }
         }
     }
+    post {
+        cleanup {
+            cleanWs()
+        }
+    }
 }
 ``` 
 
