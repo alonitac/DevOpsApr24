@@ -77,3 +77,75 @@ pipeline {
 }
 ```
 
+
+In the **NetflixInfra** repo (the dedicated repo you've created for the Kubernetes YAML manifests for the Netflix stack), create another `Jenkinsfile` under `pipelines/deploy.Jenkinsfile`, as follows:
+
+```text
+pipeline {
+    agent any
+    
+    parameters { 
+        string(name: 'SERVICE_NAME', defaultValue: '', description: '')
+        string(name: 'IMAGE_FULL_NAME_PARAM', defaultValue: '', description: '')
+    }
+
+    stages {
+        stage('Deploy') {
+            steps {
+                /*
+                
+                Now your turn! implement the pipeline steps ...
+                
+                - `cd` into the directory corresponding to the SERVICE_NAME variable. 
+                - Change the YAML manifests according to the new $IMAGE_FULL_NAME_PARAM parameter.
+                  You can do so using `yq` or `sed` command, by a simple Python script, or any other method.
+                - Commit the changes, push them to GitHub. 
+                   * Setting global Git user.name and user.email in 'Manage Jenkins > System' is recommended.
+                   * Setting Shell executable to `/bin/bash` in 'Manage Jenkins > System' is recommended.
+                */ 
+            }
+        }
+    }
+}
+``` 
+
+Carefully review the pipeline and complete the step yourself. 
+
+In the Jenkins dashboard, create another Jenkins **Pipeline** (e.g. named `NetflixFrontendDeploy`). Configure it similarly to the Build pipeline - choose **Pipeline script from SCM**, and specify the Git URL, branch, path to the Jenkinsfile, **as well as your created GitHub credentials** (as this pipeline has to push commit on your behalf).  
+
+As can be seen, unlike the Build pipeline, the Deploy pipeline is not triggered automatically upon a push event in GitHub (there is no `githubPush()`...)
+but is instead initiated by providing a parameter called `IMAGE_FULL_NAME_PARAM`, which represents the new Docker image to deploy to your Kubernetes cluster. 
+
+Now to complete the Build-Deploy flow, configure the Build pipeline to trigger the Deploy pipeline and provide it with the `IMAGE_FULL_NAME_PARAM` parameter by adding the following stage after a successful Docker image build: 
+
+```diff
+stages {
+
+  ...
+
++ stage('Trigger Deploy') {
++     steps {
++         build job: '<deploy-pipeline-name-here>', wait: false, parameters: [
++             string(name: 'SERVICE_NAME', value: "NetflixFrontend"),
++             string(name: 'IMAGE_FULL_NAME_PARAM', value: "$IMAGE_FULL_NAME")
++         ]
++     }
++ }
+
+}
+```
+
+Where `<deploy-pipeline-name-here>` is the name of your Deploy pipeline (should be `NetflixFrontendDeploy` if you followed our example).
+
+Test your simple CI/CD pipeline end-to-end.
+
+
+## The Build and Deploy phases - overview
+
+![][jenkins_build_deploy]
+
+
+[jenkins_build_deploy]: https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/img/jenkins_build_deploy.png
+
+
+
