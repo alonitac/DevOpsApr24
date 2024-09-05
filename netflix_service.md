@@ -155,6 +155,18 @@ Test your simple CI/CD pipeline end-to-end.
 
 ## Configure a GitHub webhook
 
+Create credentials in Jenkins to allow you to authenticate with GitHub for accessing repositories and managing webhooks.
+
+1. **Kind** must be **Username and password**.
+2. Choose informative **Username** (as **github** or something similar)
+3. The **Password** should be a GitHub Personal Access Token with the following scope:
+   ```text
+   repo,read:user,user:email,write:repo_hook
+   ```
+   Click [here](https://github.com/settings/tokens/new?scopes=repo,read:user,user:email,write:repo_hook) to create a token with this scope.
+4. Enter `github` as the credentials **ID**.
+
+
 A **GitHub webhook** is a mechanism that allows GitHub to notify a Jenkins server when changes occur in the repo. 
 When a webhook is configured, GitHub will send a HTTP POST request to a specified URL whenever a specified event, such as a push to the repository, occurs.
 
