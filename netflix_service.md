@@ -182,6 +182,56 @@ When a webhook is configured, GitHub will send a HTTP POST request to a specifie
 ![][jenkins_build_deploy]
 
 
+# The Netflix Service: Full CI/CD workflow
+
+You'll design and implement a full CI/CD pipeline for the Netflix stack both Development and Production environments
+using Jenkins.
+
+## Guidelines
+
+- Create the following pipelines in Jenkins:
+  - In the **NetflixFrontend** repo under `pipelines/` dir:
+    - `build-prod.Jenkinsfile` - triggered upon changes on `main` branch.
+    - `build-dev.Jenkinsfile` - triggered upon changes on `dev` branch.
+    - `test.Jenkinsfile` - triggered upon changes in Pull Request branches (no need to implement real testing).
+  - In the **NetflixMovieCatalog** repo under `pipelines/` dir:
+    - `build-prod.Jenkinsfile` - triggered upon changes on `main` branch.
+    - `build-dev.Jenkinsfile` - triggered upon changes on `dev` branch.
+    - `test.Jenkinsfile` - triggered upon changes in Pull Request branches.
+  - In the **NetflixInfra** repo:
+    - `netflix-deploy-prod.Jenkinsfile` - triggered by the build prod pipelines, pushes changes to branch `main`.
+    - `netflix-deploy-dev.Jenkinsfile` - triggered by the build dev pipelines, pushes changes to branch `dev`.
+
+### The workflow
+
+
+You want to develop a new feature in the **NetflixMovieCatalog** microservice. 
+Here is the workflow that should be used:
+
+1. In the **NetflixMovieCatalog** repo, from an updated branch `main` (pull it if needed), create a new branch called `feature/new_feature`.
+2. Commit your code changes.
+3. To test your change in development env, checkout branch `dev` and merge your feature branch **into** `dev`.
+4. Push to GitHub, let the `build-dev` pipeline to build a new version, push it to DockerHub, and trigger the `netflix-deploy-dev` pipeline.
+5. Make sure the feature is reflected in your k8s cluster for dev app. 
+6. If there are some fixes to do, checkout `feature/new_feature` again, commit your fixes. Merge then into `dev` branch and push it. 
+7. Once you are satisfied with the results, it's time to deploy to production. 
+8. Push branch `feature/new_feature` to GitHub and create a Pull Request from `feature/new_feature` branch into `main` branch of your repo. 
+9. Review the PR (in real world, this is the step where an extensive testing is performed), let Jenkins execute the `test` pipeline, and approve it. 
+10. Once the `feature/new_feature` was merge into `main`, the `build-prod` pipeline would be triggered and then the `netflix-deploy-prod` in turn, deploying the changes into prod app in the k8s cluster.
+
+As can be seen, when setting an automated deployment pipeline on branch `main`, a developer can by mistake commit and push some change from his local machine directly on branch `main`, and that in turn will trigger an automated deployment pipeline. 
+Thus, to protect branch `main`, you should [configure a protection rule](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule#creating-a-branch-protection-rule) on branch `main` that enforces a PR review before merging.
+
+**Work properly! Don't be tempted to commit and push directly on `dev` and `main` branches.** 
+The only branch to commit changes is your feature branch. 
+When you want to test it on dev env, merge your feature branch into `dev` and push. When you want to have it in prod, create a PR from your feature branch into `main`, review and merge. 
+
+
+![][git_envbased]
+
+[git_envbased]: https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/img/git_envbased.png
+
+
 [jenkins_build_deploy]: https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/img/jenkins_build_deploy.png
 
 
