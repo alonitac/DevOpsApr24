@@ -144,6 +144,26 @@ Where `<deploy-pipeline-name-here>` is the name of your Deploy pipeline (should 
 
 Test your simple CI/CD pipeline end-to-end.
 
+## Expose the Jenkins server publicly
+
+3. Expose the Jenkins server using Ngrok static domain:
+   1. If haven't done yet, create your [Ngrok account](https://ngrok.com/), download and install the tool. 
+   1. In the main menu of your account page, click **Setup and installation**. Under **Deploy your app online**, enable a **static domain**. 
+   1. Expose your Jenkins server by `ngrok http --domain=<my-static-domain> 8080` (change `<my-static-domain>` accordingly). 
+4. Open up your browser and visit the Jenkins server by `https://<my-static-domain>`. 
+
+
+## Configure a GitHub webhook
+
+A **GitHub webhook** is a mechanism that allows GitHub to notify a Jenkins server when changes occur in the repo. 
+When a webhook is configured, GitHub will send a HTTP POST request to a specified URL whenever a specified event, such as a push to the repository, occurs.
+
+1. If you don't have it yet, **fork** both the [NetflixFrontend][NetflixFrontend] and the [NetflixMovieCatalog][NetflixMovieCatalog] repos. 
+2. On **each** GitHub repository page, go to **Settings**. From there, click **Webhooks**, then **Add webhook**.
+3. In the **Payload URL** field, type `https://<your-jenkins-ngrok-url>/github-webhook/`. In the **Content type** select: `application/json` and leave the **Secret** field empty.
+4. Choose the following events to be sent in the webhook:
+    1. Pushes
+    2. Pull requests
 
 ## The Build and Deploy phases - overview
 
