@@ -325,6 +325,7 @@ Your `main` branch is now protected and no code can be pushed into it unless the
 
 [git_envbased]: https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/img/git_envbased.png
 
+[NetflixFrontend]: https://github.com/exit-zero-academy/NetflixFrontend
 
 [jenkins_build_deploy]: https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/img/jenkins_build_deploy.png
 
