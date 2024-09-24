@@ -229,6 +229,100 @@ When you want to test it on dev env, merge your feature branch into `dev` and pu
 
 ![][git_envbased]
 
+
+# Testing pipeline
+
+
+A Pull Request is a crucial point for testing and review code changes before they are merged into the `main` branch (and deployed to production systems from there). 
+
+Let's build a **testing pipeline** on an opened Pull Request.
+
+So far we've seen how pipelines can be built around a single branch (e.g. `main`). 
+Now we would like to create a new pipeline which will be triggered on **every PR branch** that is created in GitHub.
+For that we will utilize Jenkins [multi-branch pipeline](https://www.jenkins.io/doc/book/pipeline/multibranch/).
+
+## Create a multi-branch pipeline
+
+1. In the [NetflixFrontend][NetflixFrontend] repo, create the `pipelines/test.Jenkinsfile` pipeline as follows:
+
+```text
+pipeline {
+    agent any
+
+    stages {
+        stage('Tests before build') {
+            parallel {
+             stage('Unittest') {
+                 steps {
+                     sh 'echo unittesting...'
+                 }
+             }
+             stage('Lint') {
+                 steps {
+                     sh 'echo linting...'
+                 }
+             }
+            }
+        }
+        stage('Build and deploy to Test environment') {
+            steps {
+                sh 'echo trigger build and deploy pipelines for test environment... wait until successful deployment'
+            }
+        }
+        stage('Tests after build') {
+            parallel {
+              stage('Security vulnerabilities scanning') {
+                    steps {
+                        sh 'echo scanning for vulnerabilities...'
+                    }
+              }
+              stage('API test') {
+                 steps {
+                     sh 'echo testing API...'
+                 }
+              }
+              stage('Load test') {
+                  steps {
+                      sh 'echo testing under load...'
+                  }
+              }
+            }
+        }
+    }
+}
+```
+
+To save time and compute resources, we used the [`parallel`](https://www.jenkins.io/doc/book/pipeline/syntax/#parallel) directive to run the test stages in parallel, while failing the whole build when one of the stages is failed.
+
+
+2. Commit and push your changes.
+3. From the Jenkins dashboard page, choose **New Item**, and create a **Multibranch Pipeline** named `NetflixFrontendTesting`.
+4. Under **Branch Sources** choose **Add source**, then **GitHub**.
+5. Choose your GitHub credentials.
+6. Under **Repository HTTPS URL**, enter your NetflixFrontend repo URL.
+7. Under **Behaviors**, delete all behaviors other than **Discover pull requests from origin**. Configure this behavior to **Merging the pull request with the target branch revision**.
+8. Under **Build Configuration**, specify the path to the testing Jenkinsfile.
+9. Create the pipeline. 
+
+### Test the pipeline
+
+1. From branch `main` create a new branch change some code lines. Push the branch to remote.
+1. In your app GitHub page, create a Pull Request from your branch into `main`.
+1. Watch the triggered pipeline in Jenkins. 
+
+## Protect branch `main`
+
+We also would like to protect the `main` branch from being merged and pushed by non-tested branches.
+
+1. From GitHub main repo page, go to **Settings**, then **Branches**.
+2. **Add branch protection rule** for the `main` branch as follows:
+   1. Check **Require a pull request before merging**.
+   2. Check **Require status checks to pass before merging** and search the `continuous-integration/jenkins/pr-merge` check done by Jenkins.
+   3. Save the protection rule.
+
+Your `main` branch is now protected and no code can be pushed into it unless the PR is reviewed by other team member and passed all automatic tests done by Jenkins.
+
+
 [git_envbased]: https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/img/git_envbased.png
 
 
