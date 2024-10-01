@@ -90,6 +90,19 @@ Please complete the course [Onboarding tutorial](tutorials/onboarding.md). Once 
  <td align="center">&nbsp;</td>
 </tr>
 
+
+<tr>
+ <td>8</td>
+ <td>Orchestration (K8S)</td>
+ <td><a href="tutorials/k8s_observability.md.md">Cluster observability</a></td>
+ <td align="center"></td>
+ <td align="center"></td>
+ <td align="center"></td>
+ <td align="center">&nbsp;</td>
+</tr>
+
+
+
 </table>
 
 
