@@ -221,3 +221,20 @@ Please complete the course [Onboarding tutorial](tutorials/onboarding.md). Once 
 </tr>
 
 </table>
+
+# Monitoring and Alerting
+
+<table width="100%">
+<tr><th>#</th><th>Topic</th><th>Tutorial</th><th colspan="3">&nbsp;&nbsp;&nbsp;Resources&nbsp;&nbsp;&nbsp;</th><th>Project</th></tr>
+
+<tr>
+ <td>1</td>
+ <td>Monitoring</td>
+ <td><a href="tutorials/monitoring_and_alerting_elastic_kibana.md">Elasticsearch and Kibana</a></td>
+ <td align="center"></td>
+ <td align="center"></td>
+ <td align="center"><a href="tutorials/monitoring_and_alerting_elastic_kibana.md#exercises"><img src="https://alonitac.github.io/DevOpsTheHardWay/img/pen.png" /></a></td>
+ <td align="center">&nbsp;</td>
+</tr>
+
+</table>
