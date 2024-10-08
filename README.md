@@ -237,4 +237,15 @@ Please complete the course [Onboarding tutorial](tutorials/onboarding.md). Once 
  <td align="center">&nbsp;</td>
 </tr>
 
+
+<tr>
+ <td>1</td>
+ <td>Monitoring</td>
+ <td><a href="tutorials/monitoring_and_alerting_grafana_prometheus.md">Prometheus and Grafana</a></td>
+ <td align="center"></td>
+ <td align="center"></td>
+ <td align="center"><a href="tutorials/monitoring_and_alerting_grafana_prometheus.md#exercises"><img src="https://alonitac.github.io/DevOpsTheHardWay/img/pen.png" /></a></td>
+ <td align="center">&nbsp;</td>
+</tr>
+
 </table>
